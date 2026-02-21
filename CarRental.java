@@ -1,9 +1,8 @@
 import java.util.*; // import utilities
-
 class Car{
     String licensePlate; // unique id
     int costPerDay; // daily cost
-    int freeKmsPerDay; // free kms per day
+    int freeKmsPerDay; // free kms per day(not charged)
     int costPerKm; // extra km cost
     List<Booking> bookings; // bookings list
     public Car(String licensePlate,int costPerDay,int freeKmsPerDay,int costPerKm){
@@ -30,12 +29,10 @@ class Booking{
 class CarRentalService{
     private Map<String,Car> cars; // cars map
     private Map<String,Booking> bookings; // order map
-
     public CarRentalService(){
         this.cars=new HashMap<>(); // init cars
         this.bookings=new HashMap<>(); // init bookings
     }
-
     public void addCar(String licensePlate,int costPerDay,int freeKmsPerDay,int costPerKm){ // O(1)
         if(cars.containsKey(licensePlate))return; // ignore duplicate
         cars.put(licensePlate,new Car(licensePlate,costPerDay,freeKmsPerDay,costPerKm)); // add car
@@ -55,13 +52,11 @@ class CarRentalService{
         bookings.put(orderId,booking); // store in map
         return true; // success
     }
-
     public void startTrip(String orderId,int odometerReading){ // O(1)
         Booking booking=bookings.get(orderId); // fetch booking
         booking.startOdometer=odometerReading; // store start km
         booking.tripStarted=true; // mark started
     }
-
     public int endTrip(String orderId,int finalOdometer,String endDate){ // O(N)
         Booking booking=bookings.get(orderId); // fetch booking
         Car car=findCarByBooking(orderId); // fetch car
@@ -75,16 +70,13 @@ class CarRentalService{
         booking.tillDay=endDay; // update booking to actual end
         return totalCost; // return cost
     }
-
     private boolean overlaps(int a,int b,int c,int d){ // inclusive overlap
         return a<=d && c<=b; // overlap rule
     }
-
     private int parseDay(String date){ // parse yyyy-mm-dd
         String[] parts=date.split("-"); // split
         return Integer.parseInt(parts[2]); // return day
     }
-
     private Car findCarByBooking(String orderId){ // find car
         for(Car car:cars.values()){ // iterate cars
             for(Booking b:car.bookings){
